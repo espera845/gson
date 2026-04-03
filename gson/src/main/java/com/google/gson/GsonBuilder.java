@@ -700,14 +700,6 @@ public final class GsonBuilder {
     return this;
   }
 
-  private static int checkDateFormatStyle(int style) {
-    // Valid DateFormat styles are: 0, 1, 2, 3 (FULL, LONG, MEDIUM, SHORT)
-    if (style < 0 || style > 3) {
-      throw new IllegalArgumentException("Invalid style: " + style);
-    }
-    return style;
-  }
-
   /**
    * Configures Gson for custom serialization or deserialization. This method combines the
    * registration of an {@link TypeAdapter}, {@link InstanceCreator}, {@link JsonSerializer}, and a
@@ -767,16 +759,6 @@ public final class GsonBuilder {
       factories.add(factory);
     }
     return this;
-  }
-
-  /** Whether the type has a built-in adapter which cannot be overridden. */
-  private static boolean hasNonOverridableAdapter(Type type) {
-    return type == Object.class;
-    // This should also cover `JsonElement.class.isAssignableFrom(type)`, however for backward
-    // compatibility this is not covered here because really old Gson versions had no built-in
-    // adapter for JsonElement so users registered custom adapters. These adapters don't have any
-    // effect in recent Gson versions. See
-    // https://github.com/google/gson/issues/2787#issuecomment-2581568157
   }
 
   /**
@@ -1014,6 +996,24 @@ public final class GsonBuilder {
     @SuppressWarnings("unchecked")
     List<E> list = (List<E>) Collections.unmodifiableList(Arrays.asList(collection.toArray()));
     return list;
+  }
+
+  private static int checkDateFormatStyle(int style) {
+    // Valid DateFormat styles are: 0, 1, 2, 3 (FULL, LONG, MEDIUM, SHORT)
+    if (style < 0 || style > 3) {
+      throw new IllegalArgumentException("Invalid style: " + style);
+    }
+    return style;
+  }
+
+  /** Whether the type has a built-in adapter which cannot be overridden. */
+  private static boolean hasNonOverridableAdapter(Type type) {
+    return type == Object.class;
+    // This should also cover `JsonElement.class.isAssignableFrom(type)`, however for backward
+    // compatibility this is not covered here because really old Gson versions had no built-in
+    // adapter for JsonElement so users registered custom adapters. These adapters don't have any
+    // effect in recent Gson versions. See
+    // https://github.com/google/gson/issues/2787#issuecomment-2581568157
   }
 
   private TypeAdapter<Number> doubleAdapter() {
