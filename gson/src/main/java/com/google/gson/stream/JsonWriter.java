@@ -178,8 +178,11 @@ public class JsonWriter implements Closeable, Flushable {
   private static final String[] REPLACEMENT_CHARS;
   private static final String[] HTML_SAFE_REPLACEMENT_CHARS;
 
+  public static final int CHARS_SIZE = 128;
+  public static final int STACK_SIZE = 32;
+
   static {
-    REPLACEMENT_CHARS = new String[128];
+    REPLACEMENT_CHARS = new String[CHARS_SIZE];
     for (int i = 0; i <= 0x1f; i++) {
       REPLACEMENT_CHARS[i] = String.format("\\u%04x", i);
     }
@@ -201,7 +204,7 @@ public class JsonWriter implements Closeable, Flushable {
   /** The JSON output destination */
   private final Writer out;
 
-  private int[] stack = new int[32];
+  private int[] stack = new int[STACK_SIZE];
   private int stackSize = 0;
 
   {
@@ -748,7 +751,7 @@ public class JsonWriter implements Closeable, Flushable {
     for (int i = 0; i < length; i++) {
       char c = value.charAt(i);
       String replacement;
-      if (c < 128) {
+      if (c < CHARS_SIZE) {
         replacement = replacements[c];
         if (replacement == null) {
           continue;
