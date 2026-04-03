@@ -245,6 +245,7 @@ public class JsonReader implements Closeable {
   private static final int NUMBER_CHAR_EXP_E = 5;
   private static final int NUMBER_CHAR_EXP_SIGN = 6;
   private static final int NUMBER_CHAR_EXP_DIGIT = 7;
+  public static final int NEW_CONSTANT = 32;
 
   /** The input JSON. */
   private final Reader in;
@@ -291,7 +292,7 @@ public class JsonReader implements Closeable {
   private String peekedString;
 
   /** The nesting stack. Using a manual array rather than an ArrayList saves 20%. */
-  private int[] stack = new int[32];
+  private int[] stack = new int[NEW_CONSTANT];
 
   private int stackSize = 0;
 
@@ -307,8 +308,8 @@ public class JsonReader implements Closeable {
    * that array. Otherwise the value is undefined, and we take advantage of that
    * by incrementing pathIndices when doing so isn't useful.
    */
-  private String[] pathNames = new String[32];
-  private int[] pathIndices = new int[32];
+  private String[] pathNames = new String[NEW_CONSTANT];
+  private int[] pathIndices = new int[NEW_CONSTANT];
 
   /** Creates a new instance that reads a JSON-encoded stream from {@code in}. */
   public JsonReader(Reader in) {
@@ -1136,7 +1137,7 @@ public class JsonReader implements Closeable {
 
         // In strict mode, throw an exception when meeting unescaped control characters (U+0000
         // through U+001F)
-        if (strictness == Strictness.STRICT && c < 0x20) {
+        if (strictness == Strictness.STRICT && c < NEW_CONSTANT) {
           throw syntaxError(
               "Unescaped control characters (\\u0000-\\u001F) are not allowed in strict mode");
         } else if (c == quote) {
