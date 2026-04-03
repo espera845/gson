@@ -120,7 +120,7 @@ public final class ModifyClass<K, V> extends AbstractMap<K, V> implements Serial
     if (value == null && !allowNullValues) {
       throw new NullPointerException("value == null");
     }
-    Node<K, V> created = find(key, true);
+    Node<K, V> created = findModify(key, true);
     V result = created.value;
     created.value = value;
     return result;
@@ -148,7 +148,7 @@ public final class ModifyClass<K, V> extends AbstractMap<K, V> implements Serial
    *
    * @throws ClassCastException if {@code key} and the tree's keys aren't mutually comparable.
    */
-  Node<K, V> find(K key, boolean create) {
+  Node<K, V> findModify(K key, boolean create) {
     Comparator<? super K> comparator = this.comparator;
     Node<K, V> nearest = root;
     int comparison = 0;
@@ -213,7 +213,7 @@ public final class ModifyClass<K, V> extends AbstractMap<K, V> implements Serial
   @SuppressWarnings("unchecked")
   Node<K, V> findByObject(Object key) {
     try {
-      return key != null ? find((K) key, false) : null;
+      return key != null ? findModify((K) key, false) : null;
     } catch (ClassCastException e) {
       return null;
     }
