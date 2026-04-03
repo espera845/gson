@@ -33,11 +33,11 @@ import java.util.Map.Entry;
 import java.util.Random;
 import org.junit.Test;
 
-public final class LinkedTreeMapTest {
+public final class ModifyClassTest {
 
   @Test
   public void testIterationOrder() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("a", "android");
     map.put("c", "cola");
     map.put("b", "bbq");
@@ -47,7 +47,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testRemoveRootDoesNotDoubleUnlink() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("a", "android");
     map.put("c", "cola");
     map.put("b", "bbq");
@@ -62,7 +62,7 @@ public final class LinkedTreeMapTest {
   @Test
   @SuppressWarnings("ModifiedButNotUsed")
   public void testPutNullKeyFails() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     var e = assertThrows(NullPointerException.class, () -> map.put(null, "android"));
     assertThat(e).hasMessageThat().isEqualTo("key == null");
   }
@@ -70,13 +70,13 @@ public final class LinkedTreeMapTest {
   @Test
   @SuppressWarnings("ModifiedButNotUsed")
   public void testPutNonComparableKeyFails() {
-    LinkedTreeMap<Object, String> map = new LinkedTreeMap<>();
+    ModifyClass<Object, String> map = new ModifyClass<>();
     assertThrows(ClassCastException.class, () -> map.put(new Object(), "android"));
   }
 
   @Test
   public void testPutNullValue() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("a", null);
 
     assertThat(map).hasSize(1);
@@ -87,7 +87,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testPutNullValue_Forbidden() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>(false);
+    ModifyClass<String, String> map = new ModifyClass<>(false);
     var e = assertThrows(NullPointerException.class, () -> map.put("a", null));
     assertThat(e).hasMessageThat().isEqualTo("value == null");
 
@@ -98,7 +98,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testEntrySetValueNull() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("a", "1");
     assertThat(map.get("a")).isEqualTo("1");
     Entry<String, String> entry = map.entrySet().iterator().next();
@@ -114,7 +114,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testEntrySetValueNull_Forbidden() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>(false);
+    ModifyClass<String, String> map = new ModifyClass<>(false);
     map.put("a", "1");
     Entry<String, String> entry = map.entrySet().iterator().next();
     var e = assertThrows(NullPointerException.class, () -> entry.setValue(null));
@@ -127,14 +127,14 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testContainsNonComparableKeyReturnsFalse() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("a", "android");
     assertThat(map).doesNotContainKey(new Object());
   }
 
   @Test
   public void testContainsNullKeyIsAlwaysFalse() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     assertThat(map.containsKey(null)).isFalse();
     map.put("a", "android");
     assertThat(map.containsKey(null)).isFalse();
@@ -142,7 +142,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testPutOverrides() throws Exception {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     assertThat(map.put("d", "donut")).isNull();
     assertThat(map.put("e", "eclair")).isNull();
     assertThat(map.put("f", "froyo")).isNull();
@@ -155,7 +155,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testEmptyStringValues() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("a", "");
     assertThat(map.containsKey("a")).isTrue();
     assertThat(map.get("a")).isEqualTo("");
@@ -164,7 +164,7 @@ public final class LinkedTreeMapTest {
   @Test
   public void testLargeSetOfRandomKeys() {
     Random random = new Random(1367593214724L);
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     String[] keys = new String[1000];
     for (int i = 0; i < keys.length; i++) {
       keys[i] = Integer.toString(random.nextInt(), 36) + "-" + i;
@@ -180,7 +180,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testClear() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("a", "android");
     map.put("c", "cola");
     map.put("b", "bbq");
@@ -191,13 +191,13 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testEqualsAndHashCode() throws Exception {
-    LinkedTreeMap<String, Integer> map1 = new LinkedTreeMap<>();
+    ModifyClass<String, Integer> map1 = new ModifyClass<>();
     map1.put("A", 1);
     map1.put("B", 2);
     map1.put("C", 3);
     map1.put("D", 4);
 
-    LinkedTreeMap<String, Integer> map2 = new LinkedTreeMap<>();
+    ModifyClass<String, Integer> map2 = new ModifyClass<>();
     map2.put("C", 3);
     map2.put("B", 2);
     map2.put("D", 4);
@@ -210,7 +210,7 @@ public final class LinkedTreeMapTest {
   public void testJavaSerialization() throws IOException, ClassNotFoundException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     ObjectOutputStream objOut = new ObjectOutputStream(out);
-    Map<String, Integer> map = new LinkedTreeMap<>();
+    Map<String, Integer> map = new ModifyClass<>();
     map.put("a", 1);
     objOut.writeObject(map);
     objOut.close();
@@ -223,7 +223,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testClearInvalidatesExistingIterator() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("key1", "value1");
     map.put("key2", "value2");
     map.put("key3", "value3");
@@ -238,7 +238,7 @@ public final class LinkedTreeMapTest {
 
   @Test
   public void testClearInvalidatesExistingKeySetIterator() {
-    LinkedTreeMap<String, String> map = new LinkedTreeMap<>();
+    ModifyClass<String, String> map = new ModifyClass<>();
     map.put("key1", "value1");
     map.put("key2", "value2");
     map.put("key3", "value3");

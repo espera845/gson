@@ -17,7 +17,7 @@
 package com.google.gson;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.internal.ModifyClass;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +38,7 @@ import java.util.Set;
  * @author Joel Leitch
  */
 public final class JsonObject extends JsonElement {
-  private final LinkedTreeMap<String, JsonElement> members = new LinkedTreeMap<>(false);
+  private final ModifyClass<String, JsonElement> members = new ModifyClass<>(false);
 
   /** Creates an empty JsonObject. */
   @SuppressWarnings("deprecation") // superclass constructor

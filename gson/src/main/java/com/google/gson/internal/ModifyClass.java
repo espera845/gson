@@ -41,7 +41,7 @@ import java.util.Set;
  * <p>This implementation was derived from Android 4.1's TreeMap class.
  */
 @SuppressWarnings("serial") // ignore warning about missing serialVersionUID
-public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Serializable {
+public final class ModifyClass<K, V> extends AbstractMap<K, V> implements Serializable {
   @SuppressWarnings({"unchecked", "rawtypes"}) // to avoid Comparable<Comparable<Comparable<...>>>
   private static final Comparator<Comparable> NATURAL_ORDER =
       new Comparator<Comparable>() {
@@ -65,7 +65,7 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
    * whose values can be {@code null}.
    */
   @SuppressWarnings("unchecked") // unsafe! this assumes K is comparable
-  public LinkedTreeMap() {
+  public ModifyClass() {
     this((Comparator<? super K>) NATURAL_ORDER, true);
   }
 
@@ -75,7 +75,7 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
    * @param allowNullValues whether {@code null} is allowed as entry value
    */
   @SuppressWarnings("unchecked") // unsafe! this assumes K is comparable
-  public LinkedTreeMap(boolean allowNullValues) {
+  public ModifyClass(boolean allowNullValues) {
     this((Comparator<? super K>) NATURAL_ORDER, allowNullValues);
   }
 
@@ -89,7 +89,7 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
    */
   // unsafe! if comparator is null, this assumes K is comparable
   @SuppressWarnings({"unchecked", "rawtypes"})
-  public LinkedTreeMap(Comparator<? super K> comparator, boolean allowNullValues) {
+  public ModifyClass(Comparator<? super K> comparator, boolean allowNullValues) {
     this.comparator = comparator != null ? comparator : (Comparator) NATURAL_ORDER;
     this.allowNullValues = allowNullValues;
     this.header = new Node<>(allowNullValues);
@@ -634,7 +634,7 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
 
     @Override
     public void clear() {
-      LinkedTreeMap.this.clear();
+      ModifyClass.this.clear();
     }
   }
 
@@ -666,7 +666,7 @@ public final class LinkedTreeMap<K, V> extends AbstractMap<K, V> implements Seri
 
     @Override
     public void clear() {
-      LinkedTreeMap.this.clear();
+      ModifyClass.this.clear();
     }
   }
 

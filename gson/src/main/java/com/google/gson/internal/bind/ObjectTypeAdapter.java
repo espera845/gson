@@ -21,7 +21,7 @@ import com.google.gson.ToNumberPolicy;
 import com.google.gson.ToNumberStrategy;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.internal.ModifyClass;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -81,7 +81,7 @@ public final class ObjectTypeAdapter extends TypeAdapter<Object> {
         return new ArrayList<>();
       case BEGIN_OBJECT:
         in.beginObject();
-        return new LinkedTreeMap<>();
+        return new ModifyClass<>();
       default:
         return null;
     }

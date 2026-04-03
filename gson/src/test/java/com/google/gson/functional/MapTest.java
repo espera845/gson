@@ -33,7 +33,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.common.TestTypes;
 import com.google.gson.internal.GsonTypes;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.internal.ModifyClass;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.AbstractMap;
@@ -224,7 +224,7 @@ public class MapTest {
             "Map<String, ...> should use LinkedTreeMap to protect against DoS in older JDK"
                 + " versions")
         .that(map)
-        .isInstanceOf(LinkedTreeMap.class);
+        .isInstanceOf(ModifyClass.class);
 
     Map<?, ?> expectedMap = Collections.singletonMap("a", 1);
     assertThat(map).isEqualTo(expectedMap);
@@ -238,7 +238,7 @@ public class MapTest {
 
     assertWithMessage("Map<Object, ...> should not use Gson Map implementation")
         .that(map)
-        .isNotInstanceOf(LinkedTreeMap.class);
+        .isNotInstanceOf(ModifyClass.class);
 
     Map<?, ?> expectedMap = Collections.singletonMap("a", 1);
     assertThat(map).isEqualTo(expectedMap);
@@ -251,7 +251,7 @@ public class MapTest {
 
     assertWithMessage("Map<Integer, ...> should not use Gson Map implementation")
         .that(map)
-        .isNotInstanceOf(LinkedTreeMap.class);
+        .isNotInstanceOf(ModifyClass.class);
 
     Map<?, ?> expectedMap = Collections.singletonMap(1, 1);
     assertThat(map).isEqualTo(expectedMap);

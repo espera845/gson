@@ -17,11 +17,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
 /**
- * Dynamic {@link MapTestSuiteBuilder Map test suite} for {@link LinkedTreeMap}. This complements
- * {@link LinkedTreeMapTest}.
+ * Dynamic {@link MapTestSuiteBuilder Map test suite} for {@link ModifyClass}. This complements
+ * {@link ModifyClassTest}.
  */
 @RunWith(AllTests.class)
-public class LinkedTreeMapSuiteTest {
+public class ModifyClassSuiteTest {
   private static class MapGenerator extends TestStringMapGenerator {
     private final boolean allowNullValues;
 
@@ -33,7 +33,7 @@ public class LinkedTreeMapSuiteTest {
     protected Map<String, String> create(Entry<String, String>[] entries) {
       // This is not completely accurate: Because LinkedTreeMap has no constructor which accepts
       // existing entries, this has to add the entries individually with `Map#put`
-      var map = new LinkedTreeMap<String, String>(allowNullValues);
+      var map = new ModifyClass<String, String>(allowNullValues);
       for (var entry : entries) {
         map.put(entry.getKey(), entry.getValue());
       }
@@ -75,7 +75,7 @@ public class LinkedTreeMapSuiteTest {
             .createTestSuite();
 
     // Use qualified class name to make it easier to find this test class in the IDE
-    TestSuite testSuite = new TestSuite(LinkedTreeMapSuiteTest.class.getName());
+    TestSuite testSuite = new TestSuite(ModifyClassSuiteTest.class.getName());
     testSuite.addTest(nullValuesSuite);
     testSuite.addTest(nonNullValuesSuite);
 

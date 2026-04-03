@@ -91,7 +91,7 @@ public class ExportedPackagesTest {
   @Test
   public void testInaccessiblePackage() throws Exception {
     // Note: In case this class is renamed / removed, can change this to any other internal class
-    Class<?> internalClass = Class.forName("com.google.gson.internal.LinkedTreeMap");
+    Class<?> internalClass = Class.forName("com.google.gson.internal.ModifyClass");
     assertThat(Modifier.isPublic(internalClass.getModifiers())).isTrue();
     // Get the public constructor
     Constructor<?> constructor = internalClass.getConstructor();
