@@ -139,8 +139,8 @@ public final class ModifyClass<K, V> extends AbstractMap<K, V> implements Serial
 
   @Override
   public V remove(Object key) {
-    Node<K, V> node = removeInternalByKey(key);
-    return node != null ? node.value : null;
+    Node<K, V> nodeKv = removeInternalByKey(key);
+    return nodeKv != null ? nodeKv.value : null;
   }
 
   /**
