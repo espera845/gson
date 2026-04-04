@@ -95,31 +95,7 @@ public final class TypeAdapters {
           int i = 0;
           JsonToken tokenType = in.peek();
           while (tokenType != JsonToken.END_ARRAY) {
-            boolean set;
-            switch (tokenType) {
-              case NUMBER:
-              case STRING:
-                int intValue = in.nextInt();
-                if (intValue == 0) {
-                  set = false;
-                } else if (intValue == 1) {
-                  set = true;
-                } else {
-                  throw new JsonSyntaxException(
-                      "Invalid bitset value "
-                          + intValue
-                          + ", expected 0 or 1; at path "
-                          + in.getPreviousPath());
-                }
-                break;
-              case BOOLEAN:
-                set = in.nextBoolean();
-                break;
-              default:
-                throw new JsonSyntaxException(
-                    "Invalid bitset value type: " + tokenType + "; at path " + in.getPath());
-            }
-            if (set) {
+            if (readBitSetValue(in, tokenType)) {
               bitset.set(i);
             }
             ++i;
@@ -891,6 +867,28 @@ public final class TypeAdapters {
       throw new IllegalArgumentException("Too big for an int: " + x);
     }
     return i;
+  }
+
+  private static boolean readBitSetValue(JsonReader in, JsonToken tokenType) throws IOException {
+    switch (tokenType) {
+      case NUMBER:
+      case STRING:
+        return readBitSetNumericValue(in);
+      case BOOLEAN:
+        return in.nextBoolean();
+      default:
+        throw new JsonSyntaxException(
+            "Invalid bitset value type: " + tokenType + "; at path " + in.getPath());
+    }
+  }
+
+  private static boolean readBitSetNumericValue(JsonReader in) throws IOException {
+    int intValue = in.nextInt();
+    if (intValue == 0 || intValue == 1) {
+      return intValue == 1;
+    }
+    throw new JsonSyntaxException(
+        "Invalid bitset value " + intValue + ", expected 0 or 1; at path " + in.getPreviousPath());
   }
 
   public static final TypeAdapterFactory CALENDAR_FACTORY =
