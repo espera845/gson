@@ -891,6 +891,28 @@ public final class TypeAdapters {
         "Invalid bitset value " + intValue + ", expected 0 or 1; at path " + in.getPreviousPath());
   }
 
+  private static Locale parseLocale(String locale) {
+    StringTokenizer tokenizer = new StringTokenizer(locale, "_");
+    String language = nextTokenOrNull(tokenizer);
+    String country = nextTokenOrNull(tokenizer);
+    String variant = nextTokenOrNull(tokenizer);
+    return createLocale(language, country, variant);
+  }
+
+  private static String nextTokenOrNull(StringTokenizer tokenizer) {
+    return tokenizer.hasMoreElements() ? tokenizer.nextToken() : null;
+  }
+
+  private static Locale createLocale(String language, String country, String variant) {
+    if (country == null && variant == null) {
+      return new Locale(language);
+    }
+    if (variant == null) {
+      return new Locale(language, country);
+    }
+    return new Locale(language, country, variant);
+  }
+
   public static final TypeAdapterFactory CALENDAR_FACTORY =
       newFactoryForMultipleTypes(Calendar.class, GregorianCalendar.class, CALENDAR);
 
@@ -902,27 +924,7 @@ public final class TypeAdapters {
             in.nextNull();
             return null;
           }
-          String locale = in.nextString();
-          StringTokenizer tokenizer = new StringTokenizer(locale, "_");
-          String language = null;
-          String country = null;
-          String variant = null;
-          if (tokenizer.hasMoreElements()) {
-            language = tokenizer.nextToken();
-          }
-          if (tokenizer.hasMoreElements()) {
-            country = tokenizer.nextToken();
-          }
-          if (tokenizer.hasMoreElements()) {
-            variant = tokenizer.nextToken();
-          }
-          if (country == null && variant == null) {
-            return new Locale(language);
-          } else if (variant == null) {
-            return new Locale(language, country);
-          } else {
-            return new Locale(language, country, variant);
-          }
+          return parseLocale(in.nextString());
         }
 
         @Override
