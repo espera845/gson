@@ -954,27 +954,40 @@ public class JsonReader implements Closeable {
     if (p == PEEKED_NONE) {
       p = doPeek();
     }
-    String result;
-    if (p == PEEKED_UNQUOTED) {
-      result = nextUnquotedValue();
-    } else if (p == PEEKED_SINGLE_QUOTED) {
-      result = nextQuotedValue('\'');
-    } else if (p == PEEKED_DOUBLE_QUOTED) {
-      result = nextQuotedValue('"');
-    } else if (p == PEEKED_BUFFERED) {
-      result = peekedString;
-      peekedString = null;
-    } else if (p == PEEKED_LONG) {
-      result = Long.toString(peekedLong);
-    } else if (p == PEEKED_NUMBER) {
-      result = new String(buffer, pos, peekedNumberLength);
-      pos += peekedNumberLength;
-    } else {
-      throw unexpectedTokenError("a string");
+    String result = readNextStringValue(p);
+    consumePeekedValue();
+    return result;
+  }
+
+  private String readNextStringValue(int peekedToken) throws IOException {
+    if (peekedToken == PEEKED_UNQUOTED) {
+      return nextUnquotedValue();
     }
+    if (peekedToken == PEEKED_SINGLE_QUOTED) {
+      return nextQuotedValue('\'');
+    }
+    if (peekedToken == PEEKED_DOUBLE_QUOTED) {
+      return nextQuotedValue('"');
+    }
+    if (peekedToken == PEEKED_BUFFERED) {
+      String result = peekedString;
+      peekedString = null;
+      return result;
+    }
+    if (peekedToken == PEEKED_LONG) {
+      return Long.toString(peekedLong);
+    }
+    if (peekedToken == PEEKED_NUMBER) {
+      String result = new String(buffer, pos, peekedNumberLength);
+      pos += peekedNumberLength;
+      return result;
+    }
+    throw unexpectedTokenError("a string");
+  }
+
+  private void consumePeekedValue() {
     peeked = PEEKED_NONE;
     pathIndices[stackSize - 1]++;
-    return result;
   }
 
   /**
