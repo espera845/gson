@@ -16,7 +16,7 @@
 1. [Introduction](#1-introduction)
 2. [Présentation du projet Gson](#2-présentation-du-projet-gson)
 3. [Modifications apportées](#3-modifications-apportées)
-   - [Commit 1 — Nombres magiques dans JsonWriter](#commit-1--nombres-magiques-dans-jsonwriter)
+   - [Commit 1 — Modification de la classe Modify](#commit-1--modification-de-la-classe-modify)
    - [Commit 2 — Nombres magiques dans JsonReader](#commit-2--nombres-magiques-dans-jsonreader)
    - [Commit 3 — Nombres magiques dans JsonWriter](#commit-3--nombres-magiques-dans-jsonwriter)
    - [Commit 4 — Réorganisation de la structure de GsonBuilder](#commit-4--réorganisation-de-la-structure-de-gsonbuilder)
@@ -95,17 +95,17 @@ Trois occurrences séparées signifient trois points de modification potentiels 
 #### Correction
 
 ```java
-private static final int INITIAL_STACK_CAPACITY = 32;
+private static final int NEW_CONSTANT = 32;
 
-private int[] stack = new int[INITIAL_STACK_CAPACITY];
-private String[] pathNames = new String[INITIAL_STACK_CAPACITY];
-private int[] pathIndices = new int[INITIAL_STACK_CAPACITY];
+private int[] stack = new int[NEW_CONSTANT];
+private String[] pathNames = new String[NEW_CONSTANT];
+private int[] pathIndices = new int[NEW_CONSTANT];
 ```
 
 #### Pourquoi c'est mieux
 
 - La valeur `32` n'apparaît plus qu'une seule fois
-- `JsonReader` et `JsonWriter` utilisent désormais le même nom de constante `INITIAL_STACK_CAPACITY`, rendant explicite le fait que les deux classes partagent la même logique de stack
+- `JsonReader` et `JsonWriter` utilisent désormais le même nom de constante `NEW_CONSTANT`, rendant explicite le fait que les deux classes partagent la même logique de stack
 - La cohésion entre les trois tableaux est mise en évidence par la constante partagée
 
 ---
@@ -139,16 +139,16 @@ Ces **nombres magiques** nuisent à la lisibilité : un lecteur ne peut pas comp
 Ajout de deux constantes nommées :
 
 ```java
-private static final int ASCII_REPLACEMENT_LENGTH = 128;
-private static final int INITIAL_STACK_CAPACITY = 32;
+private static final int CHARS_SIZE = 128;
+private static final int STACK_SIZE = 32;
 ```
 
 Puis utilisation systématique de ces constantes à la place des valeurs brutes.
 
 #### Pourquoi c'est mieux
 
-- `ASCII_REPLACEMENT_LENGTH = 128` documente que cette limite correspond exactement à la taille de la table des caractères ASCII standard
-- `INITIAL_STACK_CAPACITY = 32` exprime l'intention : une capacité initiale pour 32 niveaux d'imbrication JSON
+- `CHARS_SIZE = 128` documente que cette limite correspond exactement à la taille de la table des caractères ASCII standard
+- `STACK_SIZE = 32` exprime l'intention : une capacité initiale pour 32 niveaux d'imbrication JSON
 - La valeur `128` n'apparaît plus qu'en **un seul endroit** — une modification future est sûre et cohérente
 - Le code est **auto-documenté** sans avoir recours à des commentaires supplémentaires
 
