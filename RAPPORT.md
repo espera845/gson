@@ -48,9 +48,8 @@ Chaque modification correspond à un commit distinct dans le dépôt GitLab, ce 
 **Gson** est une bibliothèque Java open-source développée par Google, disponible à l'adresse [https://github.com/google/gson](https://github.com/google/gson). Elle permet de convertir des objets Java en représentation JSON et inversement.
 
 Les packages principaux analysés dans ce rapport sont :
-
+- `com.google.gson.internal` - contient la classe autrefois nommée LinkedTreeMap
 - `com.google.gson.stream` — contient `JsonReader` et `JsonWriter`, les classes bas niveau de lecture/écriture JSON
-- `com.google.gson.internal` — utilitaires internes (`JavaVersion`, `Primitives`)
 - `com.google.gson.internal.sql` — adaptateurs pour les types `java.sql`
 - `com.google.gson.internal.bind` — adaptateurs de types généraux (`TypeAdapters`)
 - `com.google.gson` — API publique (`GsonBuilder`)
@@ -79,7 +78,7 @@ nodeKv.
 
 #### Problème
 
-Même problème que dans `JsonWriter`, mais dans `gson/src/main/java/com/google/gson/stream/JsonReader.java`. La valeur `32` apparaissait à **trois endroits distincts** pour initialiser trois tableaux liés :
+Dans `gson/src/main/java/com/google/gson/stream/JsonReader.java`. La valeur `32` apparaissait à **trois endroits distincts** pour initialiser trois tableaux liés :
 
 ```java
 private int[] stack = new int[32];
