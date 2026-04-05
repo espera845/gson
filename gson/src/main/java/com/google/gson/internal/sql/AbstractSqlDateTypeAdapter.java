@@ -55,7 +55,12 @@ abstract class AbstractSqlDateTypeAdapter<T extends Date> extends TypeAdapter<T>
         return createSqlDate(format.parse(s));
       } catch (ParseException e) {
         throw new JsonSyntaxException(
-            "Failed parsing '" + s + "' as " + typeDescription + "; at path " + in.getPreviousPath(),
+            "Failed parsing '"
+                + s
+                + "' as "
+                + typeDescription
+                + "; at path "
+                + in.getPreviousPath(),
             e);
       } finally {
         format.setTimeZone(originalTimeZone);
