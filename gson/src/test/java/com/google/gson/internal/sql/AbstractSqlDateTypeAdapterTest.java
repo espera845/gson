@@ -31,6 +31,8 @@ import org.junit.Test;
 @SuppressWarnings("JavaUtilDate")
 public class AbstractSqlDateTypeAdapterTest {
   private static final class TestSqlDate extends Date {
+    private static final long serialVersionUID = 1L;
+
     TestSqlDate(long time) {
       super(time);
     }
