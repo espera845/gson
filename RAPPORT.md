@@ -16,7 +16,7 @@
 1. [Introduction](#1-introduction)
 2. [Présentation du projet Gson](#2-présentation-du-projet-gson)
 3. [Modifications apportées](#3-modifications-apportées)
-   - [Commit 1 — Modification de la classe Modify](#commit-1--modification-de-la-classe-modify)
+   - [Commit 1 — Modification nom de classe, de méthode et de variable de la classe Modify](#modification-de-la-Modify)
    - [Commit 2 — Nombres magiques dans JsonReader](#commit-2--nombres-magiques-dans-jsonreader)
    - [Commit 3 — Nombres magiques dans JsonWriter](#commit-3--nombres-magiques-dans-jsonwriter)
    - [Commit 4 — Réorganisation de la structure de GsonBuilder](#commit-4--réorganisation-de-la-structure-de-gsonbuilder)
@@ -60,7 +60,7 @@ Les packages principaux analysés dans ce rapport sont :
 
 ---
 
-### Commit 1 — Nombres magiques dans JsonWriter
+### Commit 1 — Modification de la classe Modify.
 
 **Lien des commits :** `https://gitlab-etu.fil.univ-lille.fr/metogbe-espera.yebe.etu/gl/-/commit/1818505c224fb2b407f3a324051a5d54dad72577`
 `https://gitlab-etu.fil.univ-lille.fr/metogbe-espera.yebe.etu/gl/-/commit/28b6d13ea538494d676c480b4886f34789aa5eeb`
