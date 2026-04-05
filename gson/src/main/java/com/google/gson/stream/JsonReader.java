@@ -457,16 +457,11 @@ public class JsonReader implements Closeable {
    * @throws IllegalStateException if the next token is not the beginning of an array.
    */
   public void beginArray() throws IOException {
-    int p = peeked;
-    if (p == PEEKED_NONE) {
-      p = doPeek();
-    }
+    int p = requirePeeked(PEEKED_BEGIN_ARRAY, "BEGIN_ARRAY");
     if (p == PEEKED_BEGIN_ARRAY) {
       push(JsonScope.EMPTY_ARRAY);
       pathIndices[stackSize - 1] = 0;
       peeked = PEEKED_NONE;
-    } else {
-      throw unexpectedTokenError("BEGIN_ARRAY");
     }
   }
 
@@ -477,16 +472,11 @@ public class JsonReader implements Closeable {
    * @throws IllegalStateException if the next token is not the end of an array.
    */
   public void endArray() throws IOException {
-    int p = peeked;
-    if (p == PEEKED_NONE) {
-      p = doPeek();
-    }
+    int p = requirePeeked(PEEKED_END_ARRAY, "END_ARRAY");
     if (p == PEEKED_END_ARRAY) {
       stackSize--;
       pathIndices[stackSize - 1]++;
       peeked = PEEKED_NONE;
-    } else {
-      throw unexpectedTokenError("END_ARRAY");
     }
   }
 
@@ -497,15 +487,10 @@ public class JsonReader implements Closeable {
    * @throws IllegalStateException if the next token is not the beginning of an object.
    */
   public void beginObject() throws IOException {
-    int p = peeked;
-    if (p == PEEKED_NONE) {
-      p = doPeek();
-    }
+    int p = requirePeeked(PEEKED_BEGIN_OBJECT, "BEGIN_OBJECT");
     if (p == PEEKED_BEGIN_OBJECT) {
       push(JsonScope.EMPTY_OBJECT);
       peeked = PEEKED_NONE;
-    } else {
-      throw unexpectedTokenError("BEGIN_OBJECT");
     }
   }
 
@@ -516,17 +501,12 @@ public class JsonReader implements Closeable {
    * @throws IllegalStateException if the next token is not the end of an object.
    */
   public void endObject() throws IOException {
-    int p = peeked;
-    if (p == PEEKED_NONE) {
-      p = doPeek();
-    }
+    int p = requirePeeked(PEEKED_END_OBJECT, "END_OBJECT");
     if (p == PEEKED_END_OBJECT) {
       stackSize--;
       pathNames[stackSize] = null; // Free the last path name so that it can be garbage collected!
       pathIndices[stackSize - 1]++;
       peeked = PEEKED_NONE;
-    } else {
-      throw unexpectedTokenError("END_OBJECT");
     }
   }
 
@@ -577,6 +557,17 @@ public class JsonReader implements Closeable {
       default:
         throw new AssertionError();
     }
+  }
+
+  private int requirePeeked(int expectedToken, String expectedDescription) throws IOException {
+    int p = peeked;
+    if (p == PEEKED_NONE) {
+      p = doPeek();
+    }
+    if (p != expectedToken) {
+      throw unexpectedTokenError(expectedDescription);
+    }
+    return p;
   }
 
   @SuppressWarnings("fallthrough")
