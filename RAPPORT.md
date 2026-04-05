@@ -369,19 +369,22 @@ La méthode `doPeek()` dans `JsonReader.java` était une méthode monolithique d
 
 #### Correction
 
-Extraction de deux sous-méthodes privées depuis `doPeek()` :
+Extraction de plusieurs sous-méthodes privées depuis `doPeek()` :
 
-- `peekInArray(int peekStack)` — gère la logique propre aux tableaux JSON
-- `peekInObject(int peekStack)` — gère la logique propre aux objets JSON
+- `peekInNonemptyArray()`
+- `peekInObject(int peekStack)`
+- `advanceAfterName()`
+- `peekInNonemptyDocument()`
+- `peekValue(int peekStack)`
 
-`doPeek()` passe d'environ 110 lignes à environ 50, délégant aux deux nouvelles méthodes.
+`doPeek()` devient une méthode d’orchestration qui délègue les différents cas à ces helpers.
 
 #### Pourquoi c'est mieux
 
-- Chaque méthode a une **responsabilité unique** et claire
-- La complexité cyclomatique de `doPeek` est significativement réduite
-- `peekInArray` et `peekInObject` sont des unités potentiellement testables indépendamment
-- Un lecteur peut comprendre `doPeek` sans avoir à parcourir 100 lignes de cas imbriqués
+- `doPeek()` est plus courte et moins dense qu’avant
+- Chaque sous-méthode traite un cas précis du parsing
+- La logique de `doPeek()` est plus lisible et mieux structurée
+- La maintenance est plus simple, car le comportement est mieux découpé
 
 ---
 
