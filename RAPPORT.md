@@ -511,7 +511,3 @@ Ce projet m'a permis de consolider plusieurs notions théoriques vues en cours e
 **Sur la duplication :** L'extraction d'une superclasse abstraite pour `SqlDateTypeAdapter` et `SqlTimeTypeAdapter` m'a montré concrètement comment la duplication crée une fragilité cachée. Le code semblait correct — et il l'était — mais toute évolution future (nouveau format, nouvelle gestion d'erreur) aurait nécessité deux modifications synchronisées, avec risque d'oubli.
 
 **Sur la décomposition des méthodes :** Les méthodes longues comme `doPeek()` ou `nextString()` sont souvent le résultat d'une évolution progressive du code. Extraire des sous-méthodes nommées est un geste simple qui améliore drastiquement la navigabilité et la testabilité.
-
-**Sur la vérification avant modification :** La tentative ratée de suppression de `newFactoryForMultipleTypes` est la leçon pratique la plus mémorable : jamais de suppression sans vérification exhaustive des usages. Un outil comme `grep` ou la fonctionnalité « Find Usages » d'un IDE est indispensable avant tout refactoring destructif.
-
-**Sur les commits atomiques :** Travailler commit par commit m'a forcé à réfléchir à chaque modification de manière isolée, à valider qu'elle est correcte avant de passer à la suivante. Cette discipline est directement transférable en contexte professionnel.
