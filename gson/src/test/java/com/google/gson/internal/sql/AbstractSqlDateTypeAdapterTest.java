@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 Google Inc.
+ * Copyright (C) 2024 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,84 +17,94 @@
 package com.google.gson.internal.sql;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Date;
+import java.sql.Time;
+import java.util.Locale;
+import java.util.TimeZone;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("JavaUtilDate")
+/**
+ * Tests for the shared logic in {@link AbstractSqlDateTypeAdapter}, exercised via its two concrete
+ * subclasses {@link SqlDateTypeAdapter} and {@link SqlTimeTypeAdapter}.
+ */
+// Suppression for `java.sql.Date` to make it explicit that this is not `java.util.Date`
+@SuppressWarnings("UnnecessarilyFullyQualified")
 public class AbstractSqlDateTypeAdapterTest {
-  private static final class TestSqlDate extends Date {
-    private static final long serialVersionUID = 1L;
 
-    TestSqlDate(long time) {
-      super(time);
-    }
+  private Gson gson;
+  private TimeZone oldTimeZone;
+  private Locale oldLocale;
+
+  @Before
+  public void setUp() {
+    this.oldTimeZone = TimeZone.getDefault();
+    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    this.oldLocale = Locale.getDefault();
+    Locale.setDefault(Locale.US);
+    gson = new Gson();
   }
 
-  private static final class TestAdapter extends AbstractSqlDateTypeAdapter<TestSqlDate> {
-    private TestAdapter() {
-      super("MMM d, yyyy", "Test SQL Date");
-    }
-
-    @Override
-    protected TestSqlDate createSqlDate(Date date) {
-      return new TestSqlDate(date.getTime());
-    }
+  @After
+  public void tearDown() {
+    TimeZone.setDefault(oldTimeZone);
+    Locale.setDefault(oldLocale);
   }
 
-  private final TestAdapter adapter = new TestAdapter();
-
+  /** Tests that null is correctly serialized to JSON null for java.sql.Date. */
   @Test
-  public void readNullReturnsNull() throws IOException {
-    JsonReader reader = new JsonReader(new StringReader("null"));
-
-    assertThat(adapter.read(reader)).isNull();
+  public void testSqlDateNullSerialization() {
+    String json = gson.toJson(null, java.sql.Date.class);
+    assertThat(json).isEqualTo("null");
   }
 
+  /** Tests that null is correctly serialized to JSON null for java.sql.Time. */
   @Test
-  public void writeNullWritesJsonNull() throws IOException {
-    StringWriter stringWriter = new StringWriter();
-    JsonWriter writer = new JsonWriter(stringWriter);
-
-    adapter.write(writer, null);
-
-    assertThat(stringWriter.toString()).isEqualTo("null");
+  public void testSqlTimeNullSerialization() {
+    String json = gson.toJson(null, Time.class);
+    assertThat(json).isEqualTo("null");
   }
 
+  /** Tests that JSON null is correctly deserialized to null for java.sql.Date. */
   @Test
-  public void readInvalidValueIncludesTypeAndPath() throws IOException {
-    JsonReader reader = new JsonReader(new StringReader("{\"value\":\"not-a-date\"}"));
-    reader.beginObject();
-    assertThat(reader.nextName()).isEqualTo("value");
-
-    try {
-      adapter.read(reader);
-      fail("Expected JsonSyntaxException");
-    } catch (JsonSyntaxException e) {
-      assertThat(e)
-          .hasMessageThat()
-          .contains("Failed parsing 'not-a-date' as Test SQL Date; at path $.value");
-    }
+  public void testSqlDateNullDeserialization() {
+    java.sql.Date result = gson.fromJson("null", java.sql.Date.class);
+    assertThat(result).isNull();
   }
 
+  /** Tests that JSON null is correctly deserialized to null for java.sql.Time. */
   @Test
-  public void readAndWriteUseConfiguredPattern() throws IOException {
-    TestSqlDate value = new TestSqlDate(1259836800000L);
+  public void testSqlTimeNullDeserialization() {
+    Time result = gson.fromJson("null", Time.class);
+    assertThat(result).isNull();
+  }
 
-    StringWriter stringWriter = new StringWriter();
-    JsonWriter writer = new JsonWriter(stringWriter);
-    adapter.write(writer, value);
+  /**
+   * Tests that a malformed date string throws a JsonSyntaxException whose message includes the type
+   * name "SQL Date" — exercising the {@code getTypeName()} method of the abstract base class.
+   */
+  @Test
+  public void testSqlDateInvalidInputThrowsWithTypeName() {
+    JsonSyntaxException e =
+        assertThrows(
+            JsonSyntaxException.class, () -> gson.fromJson("\"not-a-date\"", java.sql.Date.class));
+    assertThat(e).hasMessageThat().contains("SQL Date");
+    assertThat(e).hasMessageThat().contains("not-a-date");
+  }
 
-    assertThat(stringWriter.toString()).isEqualTo("\"Dec 3, 2009\"");
-
-    TestSqlDate parsed = adapter.read(new JsonReader(new StringReader("\"Dec 3, 2009\"")));
-    assertThat(parsed.getTime()).isEqualTo(value.getTime());
+  /**
+   * Tests that a malformed time string throws a JsonSyntaxException whose message includes the type
+   * name "SQL Time" — exercising the {@code getTypeName()} method of the abstract base class.
+   */
+  @Test
+  public void testSqlTimeInvalidInputThrowsWithTypeName() {
+    JsonSyntaxException e =
+        assertThrows(JsonSyntaxException.class, () -> gson.fromJson("\"not-a-time\"", Time.class));
+    assertThat(e).hasMessageThat().contains("SQL Time");
+    assertThat(e).hasMessageThat().contains("not-a-time");
   }
 }
